@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do Life Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Modal notifikasi timer selesai -->
+  <div id="notification-modal" role="dialog" aria-modal="true" aria-labelledby="notification-title" hidden>
+    <div class="notification-modal__content">
+      <h2 id="notification-title">Sesi Fokus Selesai!</h2>
+      <p id="notification-message">Waktu fokus 25 menit telah berakhir. Saatnya beristirahat.</p>
+      <button id="notification-dismiss" type="button">Tutup</button>
+    </div>
+  </div>
+
+  <!-- Banner error storage level aplikasi -->
+  <div id="storage-banner" role="alert" hidden>
+    <span id="storage-banner-message"></span>
+    <button id="storage-banner-dismiss" type="button" aria-label="Tutup peringatan">&#x2715;</button>
+  </div>
+
+  <!-- Dashboard utama: empat widget dalam satu halaman -->
+  <main id="dashboard">
+
+    <section id="greeting-widget" class="widget" aria-labelledby="greeting-heading">
+      <h2 id="greeting-heading">Sapaan &amp; Waktu</h2>
+      <!-- GreetingWidget akan di-render di sini oleh app.js -->
+    </section>
+
+    <section id="timer-widget" class="widget" aria-labelledby="timer-heading">
+      <h2 id="timer-heading">Focus Timer</h2>
+      <!-- TimerWidget akan di-render di sini oleh app.js -->
+    </section>
+
+    <section id="todo-widget" class="widget" aria-labelledby="todo-heading">
+      <h2 id="todo-heading">Daftar Tugas</h2>
+      <!-- TodoWidget akan di-render di sini oleh app.js -->
+    </section>
+
+    <section id="quicklinks-widget" class="widget" aria-labelledby="quicklinks-heading">
+      <h2 id="quicklinks-heading">Quick Links</h2>
+      <!-- QuickLinksWidget akan di-render di sini oleh app.js -->
+    </section>
+
+  </main>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
