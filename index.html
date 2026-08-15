@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+  <!-- Tombol toggle mode terang/gelap -->
+  <button id="theme-toggle" type="button" aria-label="Ganti ke mode gelap" title="Toggle mode terang/gelap">
+    <span id="theme-toggle-icon" aria-hidden="true">🌙</span>
+  </button>
 
   <!-- Modal notifikasi timer selesai -->
   <div id="notification-modal" role="dialog" aria-modal="true" aria-labelledby="notification-title" aria-describedby="notification-message" hidden>

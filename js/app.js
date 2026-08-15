@@ -298,6 +298,8 @@
     const KEYS = {
       TODOS: 'tld_todos_v1',
       LINKS: 'tld_links_v1',
+      THEME: 'tld_theme_v1',
+      POMODORO_DURATION: 'tld_pomodoro_duration_v1',
     };
 
     /**
@@ -391,6 +393,121 @@
       writeLinks: function (items) {
         return _write(KEYS.LINKS, items);
       },
+
+      /**
+       * Read the persisted theme preference ('light' or 'dark').
+       * Returns 'light' when not set or unreadable.
+       * @returns {'light'|'dark'}
+       */
+      readTheme: function () {
+        var raw;
+        try {
+          raw = localStorage.getItem(KEYS.THEME);
+        } catch (e) {
+          return 'light';
+        }
+        return raw === 'dark' ? 'dark' : 'light';
+      },
+
+      /**
+       * Persist the theme preference.
+       * @param {'light'|'dark'} theme
+       * @returns {{ ok: boolean, error?: string }}
+       */
+      writeTheme: function (theme) {
+        try {
+          localStorage.setItem(KEYS.THEME, theme);
+          return { ok: true };
+        } catch (e) {
+          return { ok: false, error: e.message };
+        }
+      },
+
+      /**
+       * Read the persisted Pomodoro duration in minutes (integer 1–99).
+       * Returns 25 when not set, unreadable, or out of range.
+       * @returns {number}
+       */
+      readPomodoroDuration: function () {
+        var raw;
+        try {
+          raw = localStorage.getItem(KEYS.POMODORO_DURATION);
+        } catch (e) {
+          return 25;
+        }
+        if (raw === null) return 25;
+        var parsed = parseInt(raw, 10);
+        if (isNaN(parsed) || parsed < 1 || parsed > 99) return 25;
+        return parsed;
+      },
+
+      /**
+       * Persist the Pomodoro duration in minutes.
+       * @param {number} minutes
+       * @returns {{ ok: boolean, error?: string }}
+       */
+      writePomodoroDuration: function (minutes) {
+        try {
+          localStorage.setItem(KEYS.POMODORO_DURATION, String(minutes));
+          return { ok: true };
+        } catch (e) {
+          return { ok: false, error: e.message };
+        }
+      },
+    };
+  })();
+
+  // ─── Theme Manager ───────────────────────────────────────────
+  const ThemeManager = (function () {
+    /** @type {'light'|'dark'} */
+    var _currentTheme = 'light';
+
+    /** @type {HTMLButtonElement|null} */
+    var _toggleBtn = null;
+    /** @type {HTMLElement|null} */
+    var _iconEl = null;
+
+    /**
+     * Apply the given theme to the <html> element and update button label/icon.
+     * @param {'light'|'dark'} theme
+     */
+    function _applyTheme(theme) {
+      _currentTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+
+      if (_iconEl) {
+        _iconEl.textContent = theme === 'dark' ? '☀️' : '🌙';
+      }
+      if (_toggleBtn) {
+        _toggleBtn.setAttribute(
+          'aria-label',
+          theme === 'dark' ? 'Ganti ke mode terang' : 'Ganti ke mode gelap'
+        );
+      }
+    }
+
+    return {
+      /**
+       * Initialise ThemeManager: reads persisted preference and wires the button.
+       */
+      init: function () {
+        _toggleBtn = document.getElementById('theme-toggle');
+        _iconEl    = document.getElementById('theme-toggle-icon');
+
+        // Load persisted theme (defaults to 'light')
+        var saved = StorageManager.readTheme();
+        _applyTheme(saved);
+
+        if (_toggleBtn) {
+          _toggleBtn.addEventListener('click', function () {
+            var next = _currentTheme === 'light' ? 'dark' : 'light';
+            _applyTheme(next);
+            StorageManager.writeTheme(next);
+          });
+        }
+      },
+
+      get _currentTheme() { return _currentTheme; },
     };
   })();
 
@@ -564,8 +681,10 @@
     // ── Private state ──────────────────────────────────────────
     /** @type {'idle'|'running'|'done'} */
     var _state = 'idle';
+    /** Duration in minutes (persisted) */
+    var _durationMin = 25;
     /** Milliseconds remaining when paused/idle */
-    var _remainingMs = 25 * 60 * 1000;
+    var _remainingMs = _durationMin * 60 * 1000;
     /** Absolute timestamp (ms) when the timer should reach zero */
     var _endTime = null;
     /** setInterval handle */
@@ -580,6 +699,8 @@
     var _stopBtn = null;
     /** @type {HTMLButtonElement|null} */
     var _resetBtn = null;
+    /** @type {HTMLInputElement|null} */
+    var _durationInputEl = null;
 
     // ── Stubs (implemented in tasks 6.2 and 6.3) ──────────────
 
@@ -606,17 +727,19 @@
       _updateButtons();
     }
 
-    /** Stop and reset to 25:00 */
+    /** Stop and reset to configured duration */
     function _reset() {
       clearInterval(_intervalId);
       _intervalId = null;
-      _remainingMs = 25 * 60 * 1000;
+      _remainingMs = _durationMin * 60 * 1000;
       _endTime = null;
       _state = 'idle';
 
+      var displayStr = _formatDisplay(_remainingMs);
+      var totalMin = _durationMin;
       if (_displayEl) {
-        _displayEl.textContent = '25:00';
-        _displayEl.setAttribute('datetime', 'PT25M');
+        _displayEl.textContent = displayStr;
+        _displayEl.setAttribute('datetime', 'PT' + totalMin + 'M');
       }
 
       _updateButtons();
@@ -667,7 +790,7 @@
       _remainingMs = 0;
       _state = 'done';
       _updateButtons();
-      UIHelpers.showNotification('Sesi fokus 25 menit telah selesai. Saatnya beristirahat!');
+      UIHelpers.showNotification('Sesi fokus ' + _durationMin + ' menit telah selesai. Saatnya beristirahat!');
     }
 
     /** Sync enabled/disabled state of buttons to current _state */
@@ -675,20 +798,25 @@
       if (!_startBtn || !_stopBtn || !_resetBtn) return;
 
       if (_state === 'running') {
-        // running: Start=off, Stop=on, Reset=on
+        // running: Start=off, Stop=on, Reset=on, duration input=disabled
         _startBtn.disabled = true;
         _stopBtn.disabled  = false;
         _resetBtn.disabled = false;
       } else if (_state === 'done') {
-        // done: Start=off, Stop=off, Reset=on
+        // done: Start=off, Stop=off, Reset=on, duration input=enabled
         _startBtn.disabled = true;
         _stopBtn.disabled  = true;
         _resetBtn.disabled = false;
       } else {
-        // idle: Start=on (only if time remains), Stop=off, Reset=on
+        // idle: Start=on (only if time remains), Stop=off, Reset=on, duration input=enabled
         _startBtn.disabled = (_remainingMs <= 0);
         _stopBtn.disabled  = true;
         _resetBtn.disabled = false;
+      }
+
+      // Duration input is disabled only while timer is running
+      if (_durationInputEl) {
+        _durationInputEl.disabled = (_state === 'running');
       }
     }
 
@@ -712,21 +840,53 @@
       init: function (containerEl) {
         if (!containerEl) return;
 
+        // Load persisted duration (defaults to 25)
+        _durationMin = StorageManager.readPomodoroDuration();
+
         // Reset internal state on (re-)init
         _state = 'idle';
-        _remainingMs = 25 * 60 * 1000;
+        _remainingMs = _durationMin * 60 * 1000;
         _endTime = null;
         _intervalId = null;
 
         // ── Build DOM ────────────────────────────────────────
 
-        // Countdown display
+        // Duration input row
+        var durationLabelEl = UIHelpers.createElement('label', {
+          htmlFor: 'pomodoro-duration',
+          className: 'timer-duration__label',
+        }, 'Durasi:');
+
+        _durationInputEl = UIHelpers.createElement('input', {
+          type: 'number',
+          id: 'pomodoro-duration',
+          className: 'timer-duration__input',
+          min: '1',
+          max: '99',
+          value: String(_durationMin),
+          'aria-label': 'Durasi Pomodoro dalam menit',
+        });
+
+        var durationUnitEl = UIHelpers.createElement('span', {
+          className: 'timer-duration__unit',
+        }, 'menit');
+
+        var durationRowEl = UIHelpers.createElement(
+          'div',
+          { className: 'timer-duration' },
+          durationLabelEl,
+          _durationInputEl,
+          durationUnitEl
+        );
+
+        // Countdown display — initial text reflects loaded duration
+        var initialDisplay = _formatDisplay(_remainingMs);
         _displayEl = UIHelpers.createElement('time', {
           className: 'timer-display',
-          datetime: 'PT25M',
+          datetime: 'PT' + _durationMin + 'M',
           'aria-live': 'off',
           'aria-atomic': 'true',
-        }, '25:00');
+        }, initialDisplay);
 
         // Control buttons
         _startBtn = UIHelpers.createElement('button', {
@@ -745,7 +905,7 @@
         _resetBtn = UIHelpers.createElement('button', {
           className: 'timer-btn timer-btn--reset',
           type: 'button',
-          'aria-label': 'Reset timer ke 25 menit',
+          'aria-label': 'Reset timer',
         }, 'Reset');
 
         var controlsEl = UIHelpers.createElement(
@@ -759,6 +919,7 @@
         var wrapperEl = UIHelpers.createElement(
           'div',
           { className: 'timer-content' },
+          durationRowEl,
           _displayEl,
           controlsEl
         );
@@ -776,6 +937,28 @@
 
         _resetBtn.addEventListener('click', function () {
           _reset();
+        });
+
+        // Duration input: update duration when idle and persist
+        _durationInputEl.addEventListener('change', function () {
+          if (_state === 'running') return; // safety guard — input is disabled, but just in case
+          var val = parseInt(_durationInputEl.value, 10);
+          if (isNaN(val) || val < 1) val = 1;
+          if (val > 99) val = 99;
+          // Clamp and sync input display
+          _durationInputEl.value = String(val);
+          _durationMin = val;
+          _remainingMs = _durationMin * 60 * 1000;
+
+          // Update display immediately
+          var displayStr = _formatDisplay(_remainingMs);
+          if (_displayEl) {
+            _displayEl.textContent = displayStr;
+            _displayEl.setAttribute('datetime', 'PT' + _durationMin + 'M');
+          }
+
+          StorageManager.writePomodoroDuration(_durationMin);
+          _updateButtons();
         });
 
         // When the user acknowledges the completion notification, reset the timer
@@ -800,6 +983,9 @@
     /** @type {Array<{id: string, title: string, completed: boolean}>} */
     var _items = [];
 
+    /** @type {'name-asc'|'name-desc'|'status'} */
+    var _sortOrder = 'status';
+
     // DOM refs
     /** @type {HTMLInputElement|null} */
     var _inputEl = null;
@@ -811,6 +997,8 @@
     var _emptyEl = null;
     /** @type {HTMLElement|null} Inline validation error element, created once and reused */
     var _errorEl = null;
+    /** @type {HTMLSelectElement|null} */
+    var _sortSelectEl = null;
 
     // ── Private methods ────────────────────────────────────────
 
@@ -861,6 +1049,29 @@
       if (_errorEl) {
         _errorEl.textContent = '';
         _errorEl.hidden = true;
+      }
+
+      // Check for duplicate (case-insensitive)
+      var trimmedLower = trimmed.toLowerCase();
+      var isDuplicate = _items.some(function (i) {
+        return i.title.toLowerCase() === trimmedLower;
+      });
+
+      if (isDuplicate) {
+        if (!_errorEl) {
+          _errorEl = UIHelpers.createElement('p', {
+            className: 'todo-input__error',
+            'aria-live': 'polite',
+            role: 'alert',
+          });
+          if (_addBtn && _addBtn.parentNode) {
+            _addBtn.parentNode.appendChild(_errorEl);
+          }
+        }
+        _errorEl.textContent = 'Tugas dengan nama ini sudah ada.';
+        _errorEl.hidden = false;
+        if (_inputEl) _inputEl.focus();
+        return;
       }
 
       // Generate a unique id
@@ -1034,6 +1245,19 @@
           return;
         }
 
+        // Reject duplicate (case-insensitive) — ignore the item being edited itself
+        var newTextLower = newText.toLowerCase();
+        var isDuplicate = _items.some(function (i) {
+          return i.id !== id && i.title.toLowerCase() === newTextLower;
+        });
+
+        if (isDuplicate) {
+          editError.textContent = 'Tugas dengan nama ini sudah ada.';
+          editError.hidden = false;
+          editInput.focus();
+          return;
+        }
+
         // Valid — update the item
         item.title = newText;
         titleSpan.textContent = newText;
@@ -1146,6 +1370,30 @@
     }
 
     /**
+     * Return a display-only sorted copy of _items based on _sortOrder.
+     * Does NOT mutate _items — the canonical order is always _items.
+     * @returns {Array<{id: string, title: string, completed: boolean}>}
+     */
+    function _getSortedItems() {
+      var copy = _items.slice();
+      if (_sortOrder === 'name-asc') {
+        copy.sort(function (a, b) {
+          return a.title.toLowerCase().localeCompare(b.title.toLowerCase(), 'id');
+        });
+      } else if (_sortOrder === 'name-desc') {
+        copy.sort(function (a, b) {
+          return b.title.toLowerCase().localeCompare(a.title.toLowerCase(), 'id');
+        });
+      } else {
+        // 'status': incomplete first, then completed; within each group keep original order
+        copy.sort(function (a, b) {
+          return (a.completed === b.completed) ? 0 : (a.completed ? 1 : -1);
+        });
+      }
+      return copy;
+    }
+
+    /**
      * Re-render the full list from _items.
      * Shows empty placeholder when there are no items.
      */
@@ -1163,7 +1411,7 @@
       } else {
         _emptyEl.hidden = true;
         _listEl.hidden = false;
-        _items.forEach(function (item) {
+        _getSortedItems().forEach(function (item) {
           _listEl.appendChild(_renderItem(item));
         });
       }
@@ -1219,7 +1467,41 @@
           _addBtn
         );
 
-        // ── Build list area ──────────────────────────────────
+        // ── Build sort dropdown ──────────────────────────────
+
+        var sortLabelEl = UIHelpers.createElement('label', {
+          htmlFor: 'todo-sort',
+          className: 'todo-sort__label',
+        }, 'Urutkan:');
+
+        _sortSelectEl = UIHelpers.createElement('select', {
+          id: 'todo-sort',
+          className: 'todo-sort__select',
+          'aria-label': 'Urutkan daftar tugas',
+        });
+
+        var sortOptions = [
+          { value: 'status',    label: 'Status (belum selesai dulu)' },
+          { value: 'name-asc',  label: 'Nama (A \u2192 Z)' },
+          { value: 'name-desc', label: 'Nama (Z \u2192 A)' },
+        ];
+
+        sortOptions.forEach(function (opt) {
+          var optEl = UIHelpers.createElement('option', { value: opt.value }, opt.label);
+          if (opt.value === _sortOrder) {
+            optEl.selected = true;
+          }
+          _sortSelectEl.appendChild(optEl);
+        });
+
+        var sortRowEl = UIHelpers.createElement(
+          'div',
+          { className: 'todo-sort' },
+          sortLabelEl,
+          _sortSelectEl
+        );
+
+        // ── Build list area (Todo) ────────────────────────────
 
         _emptyEl = UIHelpers.createElement('p', {
           className: 'todo-empty',
@@ -1233,6 +1515,7 @@
 
         // Append everything below the existing <h2>
         containerEl.appendChild(inputAreaEl);
+        containerEl.appendChild(sortRowEl);
         containerEl.appendChild(_emptyEl);
         containerEl.appendChild(_listEl);
 
@@ -1261,11 +1544,18 @@
         _addBtn.addEventListener('click', function () {
           _addTodo();
         });
+
+        _sortSelectEl.addEventListener('change', function () {
+          _sortOrder = _sortSelectEl.value;
+          _renderList();
+        });
       },
 
       // Expose internals for property-based tests (tasks 8.6–8.11)
       get _items() { return _items; },
       set _items(val) { _items = val; },
+      get _sortOrder() { return _sortOrder; },
+      set _sortOrder(val) { _sortOrder = val; },
       _renderList: _renderList,
       _renderItem: _renderItem,
       _addTodo: _addTodo,
@@ -1274,6 +1564,7 @@
       _persist: _persist,
       _enterEditMode: _enterEditMode,
       _exitEditMode: _exitEditMode,
+      _getSortedItems: _getSortedItems,
     };
   })();
 
@@ -1678,6 +1969,7 @@
 
   // ─── Bootstrap ───────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', function () {
+    ThemeManager.init();
     GreetingWidget.init(document.getElementById('greeting-widget'));
     if (typeof TimerWidget.init === 'function') {
       TimerWidget.init(document.getElementById('timer-widget'));
