@@ -261,11 +261,184 @@ img {
   border-left-color: #6366f1; /* indigo accent */
 }
 
+/* ─── Greeting Widget Content ─────────────────────────────── */
+
+.greeting-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1;
+  padding: var(--space-4) 0;
+  text-align: center;
+}
+
+/* Greeting text — e.g. "Selamat Pagi" */
+.greeting-text {
+  font-size: var(--font-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.02em;
+  line-height: var(--leading-tight);
+}
+
+/* Clock display — e.g. "14:35" */
+.greeting-time {
+  font-size: var(--font-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  /* Monospace digits prevent layout shift as digits change */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Date display — e.g. "Kamis, 14 Agustus 2026" */
+.greeting-date {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
+  letter-spacing: 0.01em;
+  line-height: var(--leading-normal);
+}
+
+/* Small-mobile adjustments for Greeting Widget */
+@media (max-width: 480px) {
+  .greeting-time {
+    font-size: var(--font-3xl);
+  }
+
+  .greeting-text {
+    font-size: var(--font-lg);
+  }
+}
+
 /* -------------------------
    Timer Widget
    ------------------------- */
 #timer-widget {
   border-left-color: #f59e0b; /* amber accent */
+}
+
+/* ─── Timer Widget Content ────────────────────────────── */
+
+.timer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  flex: 1;
+  padding: var(--space-4) 0;
+}
+
+/* Countdown display — large, centered, monospaced digits */
+.timer-display {
+  display: block;
+  font-size: var(--font-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  /* Tabular nums prevent layout shift as digits change */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  text-align: center;
+}
+
+/* Controls row — three buttons side by side, centered */
+.timer-controls {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-3);
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Base timer button style */
+.timer-btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-inverse);
+  /* Fast transitions — must be ≤100ms per Requirement 12.3 */
+  transition: background-color 80ms ease,
+              transform 80ms ease,
+              box-shadow 80ms ease;
+  min-width: 72px;
+  text-align: center;
+}
+
+/* Start button — primary blue */
+.timer-btn--start {
+  background-color: var(--color-primary);
+}
+
+.timer-btn--start:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.timer-btn--start:active:not(:disabled) {
+  background-color: var(--color-primary-active);
+  transform: translateY(1px);
+}
+
+/* Stop button — danger red */
+.timer-btn--stop {
+  background-color: var(--color-danger);
+}
+
+.timer-btn--stop:hover:not(:disabled) {
+  background-color: var(--color-danger-hover);
+}
+
+.timer-btn--stop:active:not(:disabled) {
+  background-color: #b91c1c;
+  transform: translateY(1px);
+}
+
+/* Reset button — neutral slate */
+.timer-btn--reset {
+  background-color: var(--color-text-secondary);
+}
+
+.timer-btn--reset:hover:not(:disabled) {
+  background-color: var(--color-text-primary);
+}
+
+.timer-btn--reset:active:not(:disabled) {
+  background-color: #0f172a;
+  transform: translateY(1px);
+}
+
+/* Disabled state — all timer buttons */
+.timer-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Focus-visible for keyboard navigation */
+.timer-btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Small-mobile adjustments for Timer Widget */
+@media (max-width: 480px) {
+  .timer-display {
+    font-size: var(--font-3xl);
+  }
+
+  .timer-btn {
+    font-size: var(--font-xs);
+    padding: var(--space-2) var(--space-4);
+    min-width: 60px;
+  }
 }
 
 /* -------------------------
@@ -275,11 +448,418 @@ img {
   border-left-color: #10b981; /* emerald accent */
 }
 
+/* ─── Todo Widget Content ─────────────────────────────────── */
+
+/* Input area: label + text field + add button */
+.todo-input-area {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.todo-input__label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.todo-input__field {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-widget);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.todo-input__field:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+.todo-input__btn {
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.todo-input__btn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.todo-input__btn:active:not(:disabled) {
+  background-color: var(--color-primary-active);
+  transform: translateY(1px);
+}
+
+.todo-input__btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Inline validation error for todo input */
+.todo-input__error {
+  width: 100%;
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-sm);
+  color: var(--color-error, #dc2626);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Empty state placeholder */
+.todo-empty {
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  font-style: italic;
+}
+
+/* Todo list */
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+/* Individual todo item */
+.todo-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-widget);
+  transition: background-color var(--transition-fast);
+}
+
+.todo-item:hover {
+  background-color: var(--color-bg-widget-alt);
+}
+
+/* Item title */
+.todo-item__title {
+  flex: 1;
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+  word-break: break-word;
+  line-height: var(--leading-relaxed);
+}
+
+/* Completed state: strikethrough text */
+.todo-item--completed .todo-item__title,
+.todo-item__title--completed {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+/* Checkbox — native control, minimal extra styling */
+.todo-item__checkbox {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Visually empty label that sits next to the checkbox for click-area */
+.todo-item__checkbox-label {
+  width: 0;
+  overflow: hidden;
+  display: inline-block;
+}
+
+/* Action buttons (edit / delete) */
+.todo-item__btn {
+  flex-shrink: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-widget);
+  font-size: var(--font-xs);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  line-height: 1;
+}
+
+.todo-item__btn--edit {
+  color: var(--color-text-secondary);
+}
+
+.todo-item__btn--edit:hover,
+.todo-item__btn--edit:focus-visible {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+  outline: none;
+}
+
+.todo-item__btn--delete {
+  color: var(--color-error, #ef4444);
+}
+
+.todo-item__btn--delete:hover,
+.todo-item__btn--delete:focus-visible {
+  background-color: var(--color-error, #ef4444);
+  border-color: var(--color-error, #ef4444);
+  color: #fff;
+  outline: none;
+}
+
+.todo-item__btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.todo-item__btn:active {
+  transform: scale(0.96);
+}
+
+/* ── Inline edit mode ──────────────────────────────────────── */
+
+/* The text input that replaces the title span in edit mode */
+.todo-item__edit-input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-focus);
+  background-color: var(--color-bg-widget);
+  color: var(--color-text-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.todo-item__edit-input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+/* Inline validation error for edit mode */
+.todo-item__edit-error {
+  display: block;
+  width: 100%;
+  font-size: var(--font-xs);
+  color: var(--color-danger, #dc2626);
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--space-1);
+  /* Occupies its own row below the input when visible */
+  order: 10;
+}
+
 /* -------------------------
    Quick Links Widget
    ------------------------- */
 #quicklinks-widget {
   border-left-color: #ec4899; /* pink accent */
+}
+
+/* ─── Quick Links Form ───────────────────────────────────── */
+
+.quicklinks-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.quicklinks-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.quicklinks-form__label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.quicklinks-form__input {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-widget);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  width: 100%;
+}
+
+.quicklinks-form__input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+/* Inline validation error message (below each field) */
+.quicklinks-form__error {
+  font-size: var(--font-xs);
+  color: var(--color-danger);
+  font-weight: var(--font-weight-medium);
+}
+
+/* General error (e.g. max links reached) — shown below the add button */
+.quicklinks-form__error--general {
+  font-size: var(--font-sm);
+}
+
+.quicklinks-form__btn {
+  align-self: flex-start;
+  padding: var(--space-2) var(--space-5);
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-md);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.quicklinks-form__btn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.quicklinks-form__btn:active:not(:disabled) {
+  background-color: var(--color-primary-active);
+  transform: translateY(1px);
+}
+
+.quicklinks-form__btn:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Empty state placeholder */
+.quicklinks-empty {
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  font-style: italic;
+}
+
+/* Links grid */
+.quicklinks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+/* Individual link card */
+.quicklinks-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-2);
+  background-color: var(--color-bg-widget-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+  min-height: 72px;
+  word-break: break-word;
+}
+
+.quicklinks-card:hover {
+  background-color: #eff6ff;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.quicklinks-card:active {
+  background-color: #dbeafe;
+  border-color: var(--color-primary-hover);
+  box-shadow: none;
+  transform: scale(0.97);
+}
+
+.quicklinks-card:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.quicklinks-card__label {
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--leading-tight);
+}
+
+/* Clickable link button inside a card (wraps label + url) */
+.quicklinks-card__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.quicklinks-card__link:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* URL subtitle — small, muted, truncated */
+.quicklinks-card__url {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+/* Delete button inside a card */
+.quicklinks-card__delete,
+.quicklinks-card__btn--delete {
+  font-size: var(--font-xs);
+  color: var(--color-danger);
+  padding: 2px var(--space-1);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  line-height: 1;
+}
+
+.quicklinks-card__delete:hover,
+.quicklinks-card__delete:focus-visible,
+.quicklinks-card__btn--delete:hover,
+.quicklinks-card__btn--delete:focus-visible {
+  background-color: #fee2e2;
+  border-color: var(--color-danger);
+  outline: none;
 }
 
 

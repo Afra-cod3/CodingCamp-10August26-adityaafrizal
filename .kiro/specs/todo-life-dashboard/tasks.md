@@ -34,15 +34,15 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Tulis fungsi bootstrap di `DOMContentLoaded` yang memanggil `.init()` pada setiap widget
     - _Requirements: 11.2, 11.3, 11.4_
 
-- [ ] 2. Implementasi modul shared: EventBus dan UIHelpers
-  - [~] 2.1 Implementasi `EventBus` di `app.js`
+- [x] 2. Implementasi modul shared: EventBus dan UIHelpers
+  - [x] 2.1 Implementasi `EventBus` di `app.js`
     - Tulis `on(event, handler)` yang mendaftarkan handler ke map internal
     - Tulis `off(event, handler)` yang menghapus handler dari map
     - Tulis `emit(event, data)` yang memanggil semua handler terdaftar untuk event tersebut
     - Definisikan konstanta `Events`: `TIMER_COMPLETE`, `NOTIFICATION_ACK`, `STORAGE_ERROR`
     - _Requirements: 11.2_
 
-  - [ ] 2.2 Implementasi `UIHelpers` di `app.js`
+  - [x] 2.2 Implementasi `UIHelpers` di `app.js`
     - Tulis `createElement(tag, attrs, ...children)` yang membuat `HTMLElement` dengan atribut dan children
     - Tulis `sanitizeText(str)` yang meng-escape HTML entities (`&`, `<`, `>`, `"`, `'`)
     - Tulis `showNotification(message)` yang menampilkan `#notification-modal` dengan teks pesan, tombol dismiss, dan trap focus ke modal
@@ -50,8 +50,8 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Tulis `showStorageError(message)` yang menampilkan toast error yang auto-dismiss setelah 5 detik atau bisa ditutup manual
     - _Requirements: 4.2, 4.3, 4.4, 10.3_
 
-- [ ] 3. Implementasi `StorageManager` di `app.js`
-  - [ ] 3.1 Implementasi metode baca dan tulis StorageManager
+- [x] 3. Implementasi `StorageManager` di `app.js`
+  - [x] 3.1 Implementasi metode baca dan tulis StorageManager
     - Definisikan konstanta `KEYS = { TODOS: 'tld_todos_v1', LINKS: 'tld_links_v1' }`
     - Tulis `readTodos()`: `localStorage.getItem` dalam `try/catch` → jika `null` return `[]` → `JSON.parse` dalam `try/catch` terpisah → validasi array → return array atau `[]`
     - Tulis `writeTodos(items)`: `JSON.stringify` lalu `localStorage.setItem` dalam `try/catch` → return `{ ok: true }` atau `{ ok: false, error: e.message }`
@@ -76,14 +76,14 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Generate random `Link_Item[]` dan verifikasi setiap elemen mengandung `id` (string), `label` (string), `url` (string)
     - Tag komentar: `// Feature: todo-life-dashboard, Property 13: Serialisasi JSON mengandung field yang diperlukan`
 
-- [ ] 4. Implementasi `GreetingWidget` di `app.js`
-  - [ ] 4.1 Implementasi `GreetingWidget.init()` dan rendering awal
+- [x] 4. Implementasi `GreetingWidget` di `app.js`
+  - [x] 4.1 Implementasi `GreetingWidget.init()` dan rendering awal
     - Tulis `init(containerEl)` yang membuat struktur DOM: elemen untuk waktu, tanggal, dan sapaan
     - Panggil `_tick()` segera saat init untuk memastikan nilai tampil dalam <1 detik setelah halaman dimuat
     - Mulai `setInterval(_tick, 1000)` untuk pembaruan per detik
     - _Requirements: 1.1, 1.2, 1.3_
 
-  - [ ] 4.2 Implementasi metode internal GreetingWidget
+  - [x] 4.2 Implementasi metode internal GreetingWidget
     - Tulis `_tick()`: ambil `new Date()`, validasi dengan `isNaN(date.getTime())`, update DOM hanya jika menit atau sapaan berubah (bandingkan dengan nilai sebelumnya)
     - Tulis `_formatTime(date)`: return `HH:MM` dari `date.getHours()` dan `date.getMinutes()` dengan padding dua digit; return `"--:--"` jika date invalid
     - Tulis `_formatDate(date)`: return `"NamaHari, DD NamaBulan YYYY"` menggunakan array `_LOCALE_DAYS` dan `_LOCALE_MONTHS` dalam Bahasa Indonesia; return `"--"` jika date invalid
@@ -91,7 +91,7 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Definisikan `_LOCALE_DAYS` dan `_LOCALE_MONTHS` sebagai array string Bahasa Indonesia
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ] 4.3 Tambahkan style CSS untuk GreetingWidget
+  - [x] 4.3 Tambahkan style CSS untuk GreetingWidget
     - Tulis styles untuk `#greeting-widget`: tampilan waktu besar, tanggal lebih kecil, teks sapaan
     - Tambahkan hover/focus state pada elemen interaktif (jika ada)
     - _Requirements: 12.3_
@@ -123,7 +123,7 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
   - Pastikan storage read/write berfungsi lewat DevTools Console
   - Tanyakan kepada user jika ada pertanyaan sebelum melanjutkan
 
-- [ ] 6. Implementasi `TimerWidget` di `app.js`
+- [x] 6. Implementasi `TimerWidget` di `app.js`
   - [ ] 6.1 Implementasi `TimerWidget.init()`, state, dan rendering tombol
     - Tulis `init(containerEl)` yang membuat DOM: display `<time>` untuk countdown, tombol Start, Stop, Reset
     - Inisialisasi state: `_state = 'idle'`, `_remainingMs = 25 * 60 * 1000`, `_endTime = null`, `_intervalId = null`
@@ -131,7 +131,7 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Tampilkan "25:00" sebagai nilai awal
     - _Requirements: 3.1, 3.2, 3.5_
 
-  - [ ] 6.2 Implementasi logika countdown timestamp-based
+  - [x] 6.2 Implementasi logika countdown timestamp-based
     - Tulis `_start()`: set `_endTime = Date.now() + _remainingMs`, set `_state = 'running'`, mulai `setInterval(_tick, 1000)`, panggil `_updateButtons()`
     - Tulis `_tick()`: hitung `remaining = _endTime - Date.now()`, jika `remaining <= 0` panggil `_onComplete()`, jika tidak update display dengan `Math.max(0, remaining)` dan panggil `_formatDisplay(remaining)`
     - Tulis `_stop()`: `clearInterval`, simpan `_remainingMs = _endTime - Date.now()`, set `_state = 'idle'`, panggil `_updateButtons()`
@@ -139,14 +139,14 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Tulis `_formatDisplay(ms)`: konversi ms ke MM:SS dengan padding dua digit
     - _Requirements: 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 6.3 Implementasi state machine tombol dan notifikasi selesai
+  - [x] 6.3 Implementasi state machine tombol dan notifikasi selesai
     - Tulis `_updateButtons()`: aktifkan/nonaktifkan Start, Stop, Reset sesuai state machine: `idle/paused`→Start=on,Stop=off,Reset=on; `running`→Start=off,Stop=on,Reset=on; `done`→Start=off,Stop=off,Reset=on
     - Tulis `_onComplete()`: `clearInterval`, set `_state = 'done'`, panggil `_updateButtons()`, tampilkan notifikasi visual via `UIHelpers.showNotification()`
     - Pasang listener pada `Events.NOTIFICATION_ACK` via `EventBus.on` untuk memanggil `_reset()` saat notifikasi dikonfirmasi
     - Pastikan saat `_state = 'done'` dan display "00:00", menekan Start tidak melakukan apa-apa (tombol disabled)
     - _Requirements: 3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4_
 
-  - [ ] 6.4 Tambahkan style CSS untuk TimerWidget
+  - [x] 6.4 Tambahkan style CSS untuk TimerWidget
     - Tulis styles untuk `#timer-widget`: display countdown besar di tengah, tiga tombol berjajar
     - Tambahkan visual state untuk tombol disabled (`opacity`, `cursor: not-allowed`)
     - Tambahkan hover/focus/active state pada tombol yang enabled (perubahan visual dalam <100ms)
@@ -171,8 +171,8 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
   - Pastikan countdown berjalan dan state tombol berubah dengan benar
   - Tanyakan kepada user jika ada pertanyaan sebelum melanjutkan
 
-- [ ] 8. Implementasi `TodoWidget` di `app.js`
-  - [ ] 8.1 Implementasi `TodoWidget.init()`, load dari storage, dan rendering list
+- [x] 8. Implementasi `TodoWidget` di `app.js`
+  - [x] 8.1 Implementasi `TodoWidget.init()`, load dari storage, dan rendering list
     - Tulis `init(containerEl)` yang membuat DOM: input teks (maxlength=200) dengan label, tombol tambah, dan `<ul>` untuk daftar
     - Panggil `StorageManager.readTodos()` dan simpan ke `_items`; jika storage unavailable tampilkan daftar kosong tanpa crash
     - Panggil `_renderList()` untuk menampilkan semua item yang tersimpan sesuai urutan penyimpanan
@@ -186,13 +186,13 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Panggil `_persist()`: jika `writeTodos` return `{ ok: false }`, tampilkan error via `UIHelpers.showStorageError()` tapi item tetap di `_items`
     - _Requirements: 5.2, 5.3, 5.4, 5.6_
 
-  - [ ] 8.3 Implementasi `_renderItem()` dan action handlers (toggle, delete)
+  - [x] 8.3 Implementasi `_renderItem()` dan action handlers (toggle, delete)
     - Tulis `_renderItem(item)` yang membuat `<li>` berisi: `<input type="checkbox">` dengan label terhubung, `<span>` teks tugas (strikethrough jika completed), tombol edit, tombol hapus
     - Tulis `_toggleTodo(id)`: flip `item.completed`, perbarui styling, panggil `_persist()`, tampilkan error jika gagal
     - Tulis `_deleteTodo(id)`: hapus item dari `_items`, re-render list, panggil `_persist()`, tampilkan error jika gagal
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7, 7.8, 7.9_
 
-  - [ ] 8.4 Implementasi mode edit inline (`_enterEditMode`, `_exitEditMode`)
+  - [x] 8.4 Implementasi mode edit inline (`_enterEditMode`, `_exitEditMode`)
     - Tulis `_enterEditMode(id)`: ganti `<span>` teks dengan `<input>` edit (maxlength tidak dibatasi di HTML, validasi di JS), isi dengan teks saat ini, pindahkan fokus ke input
     - Tulis `_exitEditMode(id, save)`:
       - Jika `save = true`: validasi teks baru (tolak jika kosong setelah trim; tolak jika >500 karakter, tampilkan inline error); jika valid, perbarui `item.title`, panggil `_persist()`
@@ -200,7 +200,7 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Pasang listener keydown: Enter → `_exitEditMode(id, true)`, Escape → `_exitEditMode(id, false)`
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8_
 
-  - [ ] 8.5 Tambahkan style CSS untuk TodoWidget
+  - [x] 8.5 Tambahkan style CSS untuk TodoWidget
     - Tulis styles untuk `#todo-widget`: input + tombol tambah di atas, list item dengan checkbox, teks, tombol edit, tombol hapus
     - Style untuk teks strikethrough pada item completed
     - Style untuk mode edit inline (input menggantikan span)
@@ -254,14 +254,14 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
   - Reload halaman dan verifikasi data tersimpan di LocalStorage
   - Tanyakan kepada user jika ada pertanyaan sebelum melanjutkan
 
-- [ ] 10. Implementasi `QuickLinksWidget` di `app.js`
+- [x] 10. Implementasi `QuickLinksWidget` di `app.js`
   - [ ] 10.1 Implementasi `QuickLinksWidget.init()`, load dari storage, dan rendering links
     - Tulis `init(containerEl)` yang membuat DOM: input label (maxlength=50), input URL (maxlength=2048), tombol tambah, dan container grid/list untuk link cards
     - Panggil `StorageManager.readLinks()` dan simpan ke `_items`; jika storage unavailable tampilkan pesan error dan daftar kosong
     - Panggil `_renderLinks()` untuk menampilkan semua link tersimpan dalam waktu <2 detik
     - _Requirements: 8.1, 8.6, 8.7_
 
-  - [ ] 10.2 Implementasi `_addLink()` dengan validasi lengkap
+  - [x] 10.2 Implementasi `_addLink()` dengan validasi lengkap
     - Tulis `_addLink(label, url)`:
       - Trim label dan url
       - Tolak jika label kosong: tampilkan inline error pada field label
@@ -273,14 +273,14 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Tulis `_validateUrl(url)`: return `true` jika url diawali `http://` atau `https://` (case-insensitive), `false` jika tidak
     - _Requirements: 8.2, 8.3, 8.4, 8.5, 8.8_
 
-  - [ ] 10.3 Implementasi `_renderLinkItem()`, klik link, dan hapus link
+  - [x] 10.3 Implementasi `_renderLinkItem()`, klik link, dan hapus link
     - Tulis `_renderLinkItem(item)` yang membuat kartu/tombol: label yang dapat diklik, URL kecil, tombol hapus
     - Pasang event listener klik pada kartu/label: `window.open(item.url, '_blank', 'noopener,noreferrer')`
     - Tulis `_deleteLink(id)`: hapus dari `_items`, re-render, panggil `_persist()`, tampilkan error jika gagal
     - Jika `_items` kosong setelah delete, tampilkan pesan kosong sebagai placeholder
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-  - [ ] 10.4 Tambahkan style CSS untuk QuickLinksWidget
+  - [-] 10.4 Tambahkan style CSS untuk QuickLinksWidget
     - Tulis styles untuk `#quicklinks-widget`: grid kartu link, hover state yang jelas pada kartu, tombol hapus
     - Tambahkan styles untuk pesan kosong (empty state)
     - Tambahkan hover/focus/active state pada kartu dan tombol (perubahan visual dalam <100ms)
@@ -321,7 +321,7 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
   - Tanyakan kepada user jika ada pertanyaan sebelum melanjutkan
 
 - [ ] 12. Integrasi akhir, polish aksesibilitas, dan responsivitas
-  - [ ] 12.1 Verifikasi dan lengkapi struktur aksesibilitas di `index.html` dan `app.js`
+  - [~] 12.1 Verifikasi dan lengkapi struktur aksesibilitas di `index.html` dan `app.js`
     - Pastikan semua `<button>` memiliki teks atau `aria-label` yang deskriptif
     - Pastikan semua `<input>` memiliki `<label>` terhubung via `for`/`id` atau `aria-label`
     - Pastikan `#notification-modal` memiliki `role="dialog"`, `aria-modal="true"`, dan focus di-trap ke dalam modal saat ditampilkan
