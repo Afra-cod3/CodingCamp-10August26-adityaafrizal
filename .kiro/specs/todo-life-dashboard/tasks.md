@@ -280,7 +280,7 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Jika `_items` kosong setelah delete, tampilkan pesan kosong sebagai placeholder
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6_
 
-  - [-] 10.4 Tambahkan style CSS untuk QuickLinksWidget
+  - [ ] 10.4 Tambahkan style CSS untuk QuickLinksWidget
     - Tulis styles untuk `#quicklinks-widget`: grid kartu link, hover state yang jelas pada kartu, tombol hapus
     - Tambahkan styles untuk pesan kosong (empty state)
     - Tambahkan hover/focus/active state pada kartu dan tombol (perubahan visual dalam <100ms)
@@ -320,8 +320,8 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
   - Verifikasi data persisten setelah reload halaman
   - Tanyakan kepada user jika ada pertanyaan sebelum melanjutkan
 
-- [ ] 12. Integrasi akhir, polish aksesibilitas, dan responsivitas
-  - [~] 12.1 Verifikasi dan lengkapi struktur aksesibilitas di `index.html` dan `app.js`
+- [x] 12. Integrasi akhir, polish aksesibilitas, dan responsivitas
+  - [x] 12.1 Verifikasi dan lengkapi struktur aksesibilitas di `index.html` dan `app.js`
     - Pastikan semua `<button>` memiliki teks atau `aria-label` yang deskriptif
     - Pastikan semua `<input>` memiliki `<label>` terhubung via `for`/`id` atau `aria-label`
     - Pastikan `#notification-modal` memiliki `role="dialog"`, `aria-modal="true"`, dan focus di-trap ke dalam modal saat ditampilkan
@@ -329,14 +329,14 @@ Bahasa implementasi: **Vanilla JavaScript** (HTML, CSS, JS murni — tanpa frame
     - Pastikan setiap `<section>` widget memiliki `<h2>` yang deskriptif
     - _Requirements: 11.4, 12.1_
 
-  - [ ] 12.2 Verifikasi layout responsif dan pemisah visual di `style.css`
+  - [x] 12.2 Verifikasi layout responsif dan pemisah visual di `style.css`
     - Verifikasi grid desktop (≥1024px): empat widget dalam 2×2, tidak ada overlap, tidak ada horizontal scroll
     - Verifikasi grid tablet (768px–1023px): empat widget dalam satu kolom, tidak ada horizontal scroll
     - Verifikasi semua pemisah visual antar widget (border, perbedaan background, atau gap ≥8px)
     - Tambahkan atau perbaiki media query jika diperlukan
     - _Requirements: 12.2, 12.4_
 
-  - [ ] 12.3 Audit console dan pastikan tidak ada error saat halaman dimuat
+  - [~] 12.3 Audit console dan pastikan tidak ada error saat halaman dimuat
     - Buka `index.html` di browser modern (Chrome/Firefox/Edge)
     - Verifikasi tidak ada error "file not found", "undefined reference", atau TypeError di console
     - Pastikan semua path CSS dan JS menggunakan path relatif

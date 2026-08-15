@@ -954,7 +954,7 @@
         type: 'text',
         className: 'todo-item__edit-input',
         value: item.title,
-        'aria-label': 'Edit tugas',
+        'aria-label': 'Edit tugas: ' + UIHelpers.sanitizeText(item.title),
       });
       // maxlength intentionally not set in HTML — validation is in JS (_exitEditMode)
 
@@ -1077,11 +1077,12 @@
       var checkboxId = 'todo-checkbox-' + item.id;
 
       // ── Checkbox ──────────────────────────────────────────
+      // The <label> below is linked via htmlFor/id, which is the primary accessible name.
+      // Do NOT add aria-label here — it would conflict with the linked <label> text.
       var checkbox = UIHelpers.createElement('input', {
         type: 'checkbox',
         id: checkboxId,
         className: 'todo-item__checkbox',
-        'aria-label': 'Tandai selesai: ' + UIHelpers.sanitizeText(item.title),
       });
       checkbox.checked = item.completed;
 
@@ -1089,12 +1090,14 @@
         _toggleTodo(item.id);
       });
 
-      // ── Checkbox label (visually hidden, for accessibility) ──
+      // ── Checkbox label ──────────────────────────────────────
+      // Connected via htmlFor → id so screen readers announce the todo title when
+      // the checkbox receives focus. aria-hidden is intentionally NOT set here.
       var checkboxLabel = UIHelpers.createElement('label', {
         htmlFor: checkboxId,
         className: 'todo-item__checkbox-label',
-        'aria-hidden': 'true',
       });
+      checkboxLabel.textContent = item.title;
 
       // ── Title span ────────────────────────────────────────
       var titleSpan = UIHelpers.createElement('span', {
